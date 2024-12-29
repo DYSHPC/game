@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game-園高反毒遊戲！</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            border: 2px solid #000;
+            background-color: #fff;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 50px 50px 50px;
+            grid-template-rows: 50px 50px 50px;
+            grid-gap: 10px;
+            margin-top: 20px;
+            justify-items: center;
+        }
+
+        .controls button {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .controls button:disabled {
+            background-color: #d0d0d0;
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .student-input {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .student-input input {
+            height: 30px;
+            font-size: 16px;
+            padding: 0 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .student-input button {
+            height: 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .student-input button:disabled {
+            background-color: #d0d0d0;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score">你的分數: <span id="score">0</span></div>
+    <canvas id="gameCanvas" width="300" height="300"></canvas>
+    <div class="controls">
+        <div></div>
+        <button id="upButton">▲</button>
+        <div></div>
+        <button id="leftButton">◀</button>
+        <div></div>
+        <button id="rightButton">▶</button>
+        <div></div>
+        <button id="downButton">▼</button>
+        <div></div>
+    </div>
+    <div class="student-input">
+        <input type="text" id="studentId" placeholder="輸入學號">
+        <button id="submitId">送出</button>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const gridSize = 10;
+        let snake = [{ x: 150, y: 150 }];
+        let food = { x: 200, y: 200 };
+        let dx = 0;
+        let dy = 0;
+        let score = 0;
+        let isGameRunning = true;
+
+        function drawRect(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, gridSize, gridSize);
+        }
+
+        function drawSnake() {
+            snake.forEach(segment => drawRect(segment.x, segment.y, 'green'));
+        }
+
+        function drawFood() {
+            drawRect(food.x, food.y, 'red');
+        }
+
+        function moveSnake() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                placeFood();
+                score++;
+                scoreElement.textContent = score;
+            } else {
+                snake.pop();
+            }
+
+            if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || snakeCollision(head)) {
+                isGameRunning = false;
+            }
+        }
+
+        function snakeCollision(head) {
+            return snake.some((segment, index) => index !== 0 && segment.x === head.x && segment.y === head.y);
+        }
+
+        function placeFood() {
+            food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+            food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+        }
+
+        function gameLoop() {
+            if (!isGameRunning) {
+                alert('遊戲結束!請在下方輸入學號後按送出');
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawFood();
+            drawSnake();
+            if (dx !== 0 || dy !== 0) {
+                moveSnake();
+            }
+            setTimeout(gameLoop, 100);
+        }
+
+        function changeDirection(direction) {
+            if (direction === 'up' && dy === 0) {
+                dx = 0;
+                dy = -gridSize;
+            } else if (direction === 'down' && dy === 0) {
+                dx = 0;
+                dy = gridSize;
+            } else if (direction === 'left' && dx === 0) {
+                dx = -gridSize;
+                dy = 0;
+            } else if (direction === 'right' && dx === 0) {
+                dx = gridSize;
+                dy = 0;
+            }
+        }
+
+        document.getElementById('upButton').addEventListener('click', () => changeDirection('up'));
+        document.getElementById('downButton').addEventListener('click', () => changeDirection('down'));
+        document.getElementById('leftButton').addEventListener('click', () => changeDirection('left'));
+        document.getElementById('rightButton').addEventListener('click', () => changeDirection('right'));
+
+        document.getElementById('submitId').addEventListener('click', () => {
+    const studentId = document.getElementById('studentId').value;
+    if (/^\d+$/.test(studentId)) {
+        const encodedScore = btoa(score.toString());
+        setTimeout(() => {
+            window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSf5JCBm9Bwz97dj3oirj-VDh33GPxlorvZGUjk3vjS3IOKu-Q/viewform?entry.195566181=${encodedScore}&entry.914703729=${studentId}`;
+        }, 3000);
+
+        successMessage.textContent = `${studentId} Wait for Send...`;
+        errorMessage.textContent = '';
+    } else {
+        errorMessage.textContent = '請輸入有效的學號!';
+        successMessage.textContent = '';
+    }
+});
+
+        
+        placeFood();
+        gameLoop();
+    </script>
+</body>
+</html>
+<a href="https://ctf.dypc.cc" target="_blank">Made by 園高程設</a>
+
+
+
+
