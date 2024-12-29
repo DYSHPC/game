@@ -210,18 +210,19 @@
 
         document.getElementById('submitId').addEventListener('click', () => {
     const studentId = document.getElementById('studentId').value;
-    if (/^\d+$/.test(studentId)) {
-        const encodedScore = btoa(score.toString());
-        setTimeout(() => {
-            window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSf5JCBm9Bwz97dj3oirj-VDh33GPxlorvZGUjk3vjS3IOKu-Q/viewform?entry.195566181=${encodedScore}&entry.914703729=${studentId}`;
-        }, 3000);
+    if (/^11\d{4}$/.test(studentId)) {
+    const encodedScore = btoa(score.toString());
+    setTimeout(() => {
+        window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSf5JCBm9Bwz97dj3oirj-VDh33GPxlorvZGUjk3vjS3IOKu-Q/viewform?entry.195566181=${encodedScore}&entry.914703729=${studentId}`;
+    }, 3000);
 
-        successMessage.textContent = `${studentId} Wait for Send...`;
-        errorMessage.textContent = '';
-    } else {
-        errorMessage.textContent = '請輸入有效的學號!';
-        successMessage.textContent = '';
-    }
+    successMessage.textContent = `學生 ${studentId} 等待送出...`;
+    errorMessage.textContent = '';
+} else {
+    errorMessage.textContent = '請輸入有效的學號！';
+    successMessage.textContent = '';
+}
+
 });
 
         
