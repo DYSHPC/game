@@ -231,8 +231,17 @@
         });
 
         document.getElementById('submitId').addEventListener('click', () => {
-            const studentId = document.getElementById('studentId').value;
-            if (/^11\d{4}$/.test(studentId) || studentId === "mygo") {
+        const studentId = document.getElementById('studentId').value;
+
+        if (studentId === "roll") {
+            setTimeout(() => {
+                    window.location.href = "https://youtu.be/dQw4w9WgXcQ?si=0nfpfRX6RPD4GhDE&t=1"; // Rick Astley - Never Gonna Give You Up
+                }, 2500);            successMessage.textContent = "Never gonna give you up, never gonna let you down...";
+            errorMessage.textContent = '';
+            return;
+        }
+
+        if (/^11\d{4}$/.test(studentId) || studentId === "mygo") {
             const encodedScore = btoa(score.toString());
 
             if (studentId === "mygo") {
@@ -252,10 +261,7 @@
             errorMessage.textContent = '請輸入有效的學號！';
             successMessage.textContent = '';
         }
-
-
-        });
-
+    });
         placeFood();
         gameLoop();
     </script>
