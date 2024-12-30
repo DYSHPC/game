@@ -96,9 +96,27 @@
             font-size: 14px;
             margin-top: 10px;
         }
+
+        .refresh-button {
+            margin-bottom: 20px;
+        }
+
+        .refresh-button button {
+            height: 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <div class="refresh-button">
+        <button id="refreshButton">重新整理</button>
+    </div>
     <div class="score">你的分數: <span id="score">0</span></div>
     <canvas id="gameCanvas" width="300" height="300"></canvas>
     <div class="controls">
@@ -208,6 +226,10 @@
         document.getElementById('leftButton').addEventListener('click', () => changeDirection('left'));
         document.getElementById('rightButton').addEventListener('click', () => changeDirection('right'));
 
+        document.getElementById('refreshButton').addEventListener('click', () => {
+            location.reload();
+        });
+
         document.getElementById('submitId').addEventListener('click', () => {
             const studentId = document.getElementById('studentId').value;
             if (/^11\d{4}$/.test(studentId) || studentId === "mygo") {
@@ -234,7 +256,6 @@
 
         });
 
-        
         placeFood();
         gameLoop();
     </script>
