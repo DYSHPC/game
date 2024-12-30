@@ -209,21 +209,30 @@
         document.getElementById('rightButton').addEventListener('click', () => changeDirection('right'));
 
         document.getElementById('submitId').addEventListener('click', () => {
-    const studentId = document.getElementById('studentId').value;
-    if (/^11\d{4}$/.test(studentId)) {
-    const encodedScore = btoa(score.toString());
-    setTimeout(() => {
-        window.location.href = `https://docs.google.com/forms/d/e/1FAIpQLSf5JCBm9Bwz97dj3oirj-VDh33GPxlorvZGUjk3vjS3IOKu-Q/viewform?entry.195566181=${encodedScore}&entry.914703729=${studentId}`;
-    }, 1800);
+            const studentId = document.getElementById('studentId').value;
+            if (/^11\d{4}$/.test(studentId) || studentId === "mygo") {
+            const encodedScore = btoa(score.toString());
 
-    successMessage.textContent = `學生 ${studentId} 送出中...`;
-    errorMessage.textContent = '';
-} else {
-    errorMessage.textContent = '請輸入有效的學號！';
-    successMessage.textContent = '';
-}
+            let targetUrl;
+            if (studentId === "mygo") {
+                targetUrl = "https://youtu.be/W8DCWI_Gc9c?si=XjOT_WvXrsQ2Ix2i&t=0";
+            } else {
+                targetUrl = `https://docs.google.com/forms/d/e/1FAIpQLSf5JCBm9Bwz97dj3oirj-VDh33GPxlorvZGUjk3vjS3IOKu-Q/viewform?entry.195566181=${encodedScore}&entry.914703729=${studentId}`;
+            }
 
-});
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 1800);
+
+            successMessage.textContent = `學生 ${studentId} 送出中...`;
+            errorMessage.textContent = '';
+        } else {
+            errorMessage.textContent = '請輸入有效的學號！';
+            successMessage.textContent = '';
+        }
+
+
+        });
 
         
         placeFood();
